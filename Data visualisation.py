@@ -31,5 +31,32 @@ plt.title("Total Profit by State")
 plt.tight_layout()
 plt.show()
 
+# Average Post-Tax Profit Margin by State
+
+margin_state = (
+    df_clean.groupby('State')['PostTaxProfitMargin']
+    .mean()
+    .reset_index()
+)
+
+plt.figure(figsize=(10,5))
+
+ax = sns.barplot(
+    data=margin_state,
+    x='State',
+    y='PostTaxProfitMargin',
+    palette='viridis',
+    edgecolor='black'
+)
+
+for container in ax.containers:
+    ax.bar_label(container, fmt='%.2f')
+
+plt.title("Average Post-Tax Profit Margin by State")
+plt.xlabel("State")
+plt.ylabel("Post-Tax Profit Margin")
+
+plt.tight_layout()
+plt.show()
 
 
