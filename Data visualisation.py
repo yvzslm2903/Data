@@ -11,7 +11,16 @@ print(df_clean.columns.tolist())
 profit_staat = df_clean.groupby('State')['Profit'].sum().reset_index()
 plt.rcParams["figure.figsize"] = (10,3)
 
-sns.barplot(data=profit_staat, x='State', y='Profit', palette='magma', edgecolor='black')
+ax = sns.barplot(
+    data=profit_staat,
+    x='State',
+    y='Profit',
+    palette='magma',
+    edgecolor='black'
+)
+
+for container in ax.containers:
+    ax.bar_label(container, fmt='%.0f')
 #Lineplot eigenschaften sind -> palette='magma', edgecolor='black'
 #In diesem Fall macht ein Barplot mehr sinn 
 plt.xlabel("State", fontsize=12)
