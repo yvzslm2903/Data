@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-df_xlsx = pd.read_excel('/Users/yavuzselim/Desktop/Data Projekt/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx')
+df_xlsx = pd.read_excel("Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx")
 df_clean = df_xlsx.dropna()
 
 etr = df_clean.groupby('State')['ETR'].mean().reset_index()
