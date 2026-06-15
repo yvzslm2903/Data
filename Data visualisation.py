@@ -59,4 +59,30 @@ plt.ylabel("Post-Tax Profit Margin")
 plt.tight_layout()
 plt.show()
 
+# Tax burden by state
+
+tax = df_clean.groupby('State')[
+    ['StateRate',
+     'EstimatedCountyRate',
+     'EstimatedCityRate']
+].mean()
+
+tax.plot(
+    kind='bar',
+    stacked=True,
+    figsize=(10,5)
+)
+
+plt.title("Average Tax Burden by State")
+plt.xticks(rotation=45)
+plt.ylabel("Tax Rate")
+
+plt.legend([
+    'State Tax',
+    'County Tax',
+    'City Tax'
+])
+
+plt.tight_layout()
+plt.show()
 
