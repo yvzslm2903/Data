@@ -1,6 +1,8 @@
 import pandas as pd
 
-df = pd.read_excel('/Users/yavuzselim/Desktop/Data Projekt/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx')
+excel_path = 'data/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx'
+
+df = pd.read_excel(excel_path)
 
 df_clean = df.copy()
 #df_clean ist die Kopie von df
