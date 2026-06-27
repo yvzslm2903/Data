@@ -8,11 +8,16 @@ df_clean.info()
 
 print(df_clean.columns.tolist())
 
-profit_staat = df_clean.groupby('State')['Profit'].sum().reset_index()
+profit_state = (
+    df_clean.groupby('State')['Profit']
+    .sum()
+    .sort_values(ascending=False)
+    .reset_index()
+)
 plt.rcParams["figure.figsize"] = (10,3)
 
 ax = sns.barplot(
-    data=profit_staat,
+    data=profit_state,
     x='State',
     y='Profit',
     palette='magma',
@@ -21,8 +26,9 @@ ax = sns.barplot(
 
 for container in ax.containers:
     ax.bar_label(container, fmt='%.0f')
+
 #Lineplot eigenschaften sind -> palette='magma', edgecolor='black'
-#In diesem Fall macht ein Barplot mehr sinn 
+
 plt.xlabel("State", fontsize=12)
 plt.ylabel("Profit", fontsize=12)
 
@@ -36,6 +42,7 @@ plt.show()
 margin_state = (
     df_clean.groupby('State')['PostTaxProfitMargin']
     .mean()
+    .sort_values(ascending=False)
     .reset_index()
 )
 
@@ -86,3 +93,14 @@ plt.legend([
 plt.tight_layout()
 plt.show()
 
+#Overview State Ranking 
+
+ranking = df_clean.groupby("State").agg({
+    "Profit":"sum",
+    "PostTaxProfitMargin":"mean",
+    "StateRate":"mean",
+    "EstimatedCountyRate":"mean",
+    "EstimatedCityRate":"mean"
+})
+
+print(ranking)
