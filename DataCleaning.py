@@ -57,17 +57,10 @@ print(nexus)
 #etrmon = df_clean.loc[df_clean['State']== 'Washington', 'ETR'].unique()
 #print(etrmon)
 
-#1. Punkt
-avg_state_year_etr = df_clean.groupby(["State", "InvoiceYear"])["ETR"].mean().reset_index()
-print(avg_state_year_etr )
+etrmon = df_clean.loc[df_clean['State']== 'Washington', 'ETR'].unique()
+print(etrmon)
+#Montana 0
+#Washington
+#Wyoming
+#
 
-#Wyoming     2016           0.051363
-#            2017           0.052280
-#Washington  2016           0.092266
-#            2017           0.091916
-#Utah        2016           0.068244
-#            2017           0.068180
-#Nur in Wyoming gestiegen 
-
-avg_posttax = df_clean.groupby(["State", "InvoiceYear"])["PostTaxProfitMargin"].mean().reset_index()
-print(avg_posttax)
