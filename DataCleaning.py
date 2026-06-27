@@ -1,11 +1,13 @@
-#DataCleaning
 import pandas as pd
 
-df_xlsx = pd.read_excel('/Users/yavuzselim/Desktop/Data Projekt/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx')
+df = pd.read_excel('/Users/yavuzselim/Desktop/Data Projekt/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx')
 
-df_xlsx.info()
+df_clean = df.copy()
+#df_clean ist die Kopie von df
+
+df_clean.info()
 #394829 Zeilen 27 Spalten
-df_clean = df_xlsx.dropna()
+df_clean = df_clean.dropna()
 #Zeilen mit mindestens ein Fehlende Value
 df_clean.info()
 #394800 Zeilen 27 Spalten
@@ -14,32 +16,58 @@ anzahl_duplikate = df_clean.duplicated().sum()
 print(f"Es gibt {anzahl_duplikate} doppelte Zeilen.")
 #0 doppelte Zeilen
 
-#Profite aller Staaten -> wichtig für die Zukunft
-staaten_profite = df_clean.groupby('State')['Profit'].sum()
+df_clean["State"] = df_clean["State"].str.strip()
 
+# Outlier-Behandlung für Revenue
+print("Revenue vor Outlier-Behandlung:")
+print(df_clean["Revenue"].describe())
+
+lower = df_clean["Revenue"].quantile(0.01)
+upper = df_clean["Revenue"].quantile(0.99)
+
+df_clean["Revenue"] = df_clean["Revenue"].clip(lower, upper)
+
+print("Revenue nach Outlier-Behandlung:")
+print(df_clean["Revenue"].describe())
+#Ist für die Durchschnittberehcnung und Diagramme wichtig um Ausreißer zu behandeln 
+
+'''
+rows = len(df_clean[df_clean["InvoiceYear"] == 2017])
+print("Die anzahl der Zeilen beträgt im jahre 2017")
+print(rows)
+#2016 = 25500
+#2017 = 369300
+'''
+
+#Profite aller Staaten -> wichtig für die Zukunft # 3. Punkt
+staaten_profite = df_clean.groupby(['State', 'InvoiceYear'])['Profit'].sum()
 print("Hier sind die Gesamtprofite aller Staaten im Datensatz:")
 print(staaten_profite)
 
-#Umsatz aller staaten -> Im Vergleich mit Profit zu sehen wie stark die Steuern sind
-umsatz = df_clean.groupby('State')['Revenue'].sum()
+
+#Umsatz aller staaten > Im Vergleich mit Profit zu sehen wie stark die Steuern sind # 4. Punkt
+umsatz = df_clean.groupby(['State', 'InvoiceYear'])['Revenue'].sum()
 print("Gesamt Umsatz in den jeweiligen Staaten")
 print(umsatz)
 
 #Nexus aller Staaten
-nexus = df_clean.groupby('State')['SalesTaxNoNexus'].sum()
+nexus = df_clean.groupby('State')['SalesTaxNoNexus'].sum().reset_index()
 print(nexus)
 
-''''
-date = df_clean.loc[df_clean['InvoiceYear']==2017]
-anzahl_zeilen2017 = len(date)
-print(f"Es gibt insgesamt {anzahl_zeilen2017} Zeilen für das Jahr 2017")
-'''
-#25500 Zeilen für 2016
-#369300 Zeilen für 2017
+#etrmon = df_clean.loc[df_clean['State']== 'Washington', 'ETR'].unique()
+#print(etrmon)
 
-etrmon = df_clean.loc[df_clean['State']== 'Washington', 'ETR'].unique()
-print(etrmon)
-#Montana 0
-#Washington
-#Wyoming
-#
+#1. Punkt
+avg_state_year_etr = df_clean.groupby(["State", "InvoiceYear"])["ETR"].mean().reset_index()
+print(avg_state_year_etr )
+
+#Wyoming     2016           0.051363
+#            2017           0.052280
+#Washington  2016           0.092266
+#            2017           0.091916
+#Utah        2016           0.068244
+#            2017           0.068180
+#Nur in Wyoming gestiegen 
+
+avg_posttax = df_clean.groupby(["State", "InvoiceYear"])["PostTaxProfitMargin"].mean().reset_index()
+print(avg_posttax)
