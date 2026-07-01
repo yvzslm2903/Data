@@ -1,8 +1,8 @@
 import pandas as pd
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
-fore = pd.read_excel('/Users/yavuzselim/Desktop/Data Projekt/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx')
-df_clean = fore.dropna()
+df = pd.read_excel("data/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx")
+df_clean = df.dropna()
 jahres_umsatz = df_clean.groupby('InvoiceYear')['Revenue'].sum().reset_index()
 
 # 2. WICHTIG: Das Jahr in ein echtes Datum umwandeln und als Index setzen
