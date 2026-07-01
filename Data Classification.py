@@ -10,11 +10,9 @@ df_classification = df.df_clean
 # Gibt die gesamten Spalten aus dem DataFrame aus 
 # print(df_classification.columns.tolist())
 
-margin_median = df_classification[
-    "PostTaxProfitMargin"
-].median()
+margin_median = df_classification["PostTaxProfitMargin"].median()
 
-df_classification["HighProfitability"] = (
+df.df_clean["HighProfitability"] = (
     df_classification["PostTaxProfitMargin"]
     > margin_median
 ).astype(int)
@@ -24,18 +22,16 @@ print(df_classification["HighProfitability"].value_counts())
 
 feature_columns = [
     "ETR",
-    "Revenue_Clipped"
-] # _> Einzeld abchecken also in 2 aufteieln! weil ETR alle zusammen ist das hier ist jetzt verdoppelt  
+    "Revenue"] 
+# _> Einzeld abchecken also in 2 aufteieln! weil ETR alle zusammen ist das hier ist jetzt verdoppelt  
 
-feature_columns2 = [
+feature_columns_tax = [
     "StateRate",
     "EstimatedCountyRate",
     "EstimatedCityRate",
-    "EstimatedSpecialRate",
-    "Revenue_Clipped"
-]    
+    "EstimatedSpecialRate"]    
 
-X = df_classification[feature_columns2]
+X = df_classification[feature_columns_tax]
 y = df_classification["HighProfitability"]
 
 X_train, X_test, y_train, y_test = train_test_split(
@@ -72,8 +68,8 @@ print("Coefficients: ")
 print(fit1.coef_)
 
 
-# Wahrscheinlichkeit für hohe Profitabilität berechnen
-df_classification["HighProfitabilityProbability"] = (
+# Wahrscheinlichkeit für das gesamte Dataset
+df.df_clean["HighProfitabilityProbability"] = (
     fit1.predict_proba(X)[:, 1]
 )
 
