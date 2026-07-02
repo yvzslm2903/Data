@@ -1,105 +1,56 @@
 import pandas as pd
-import numpy as np
 
-
-df = pd.read_excel('/Users/yavuzselim/Desktop/Data Projekt/Data/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx')
+file_name = "Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx"
+df = pd.read_excel(file_name)
 
 df_clean = df.copy()
-#df_clean ist die Kopie von df
 
 df_clean.info()
-#394829 Zeilen 27 Spalten
-df_clean = df_clean.dropna()
-#Zeilen mit mindestens ein Fehlende Value
-df_clean.info()
-#394800 Zeilen 27 Spalten
-df_clean = df_clean.reset_index(drop=True)
-#Damit wird ein reset ausgeführt damit die 29 zeilen ausgeschlossen werden
- 
+# 394829 Zeilen 
 
-anzahl_duplikate = df_clean.duplicated().sum()
-print(f"Es gibt {anzahl_duplikate} doppelte Zeilen.")
-#0 doppelte Zeilen
+anzahlduplikate = df_clean.duplicated().sum()
+df_clean = df_clean.drop_duplicates()
+print(f"Es gibt {anzahlduplikate} duplikate")
+# Keine Duplikate
 
-df_clean["Revenue_Original"] = df_clean["Revenue"].copy()
-
-lower = df_clean["Revenue_Original"].quantile(0.01)
-upper = df_clean["Revenue_Original"].quantile(0.99)
-
-df_clean["Revenue_Clipped"] = (
-    df_clean["Revenue_Original"]
-    .clip(lower=lower, upper=upper)
-)
-
-print("Revenue Original:")
-print(df_clean["Revenue_Original"].describe())
-
-print("\nRevenue für Durchschnittswerte und Diagramme:")
-print(df_clean["Revenue_Clipped"].describe())
-
-df_clean["IsReturn"] = df_clean["Revenue_Original"] < 0
-
-print("Anzahl negativer Revenue-Werte:")
-print(df_clean["IsReturn"].sum())
-
-print("\nNegative Revenue-Werte:")
-print(
-    df_clean.loc[
-        df_clean["IsReturn"],
-        "Revenue_Original"
-    ].describe()
-)
-
-print(
-    df_clean.nlargest(
-        10,
-        "Revenue_Original"
-    )[["State", "InvoiceYear", "Revenue_Original", "Profit"]]
-)
-
-print(
-    df_clean.nsmallest(
-        10,
-        "Revenue_Original"
-    )[["State", "InvoiceYear", "Revenue_Original", "Profit"]]
-)
+df_clean = df_clean.dropna().reset_index(drop = True)
+# 29 Zeilen mit min. 1 Fehlenden Wert
 
 
+print(df_clean['Revenue'].describe().round(2))
 
-print("Revenue nach Outlier-Behandlung:")
-print(df_clean["Revenue"].describe())
-#Ist für die Durchschnittberehcnung und Diagramme wichtig um Ausreißer zu behandeln 
+vorher = df_clean.shape[0]
+print(vorher)
 
-'''
-rows = len(df_clean[df_clean["InvoiceYear"] == 2017])
-print("Die anzahl der Zeilen beträgt im jahre 2017")
-print(rows)
-#2016 = 25500
-#2017 = 369300
-'''
+df_clean = df_clean.loc[(df_clean['Revenue'] > 0) & 
+                        (df_clean['Quantity'] > 0) & 
+                        (df_clean['UnitPrice'] > 0)]
+# Umsätze unter 0 & Qunatity unter 0 & Unitprice unter 0 werden ausgefiltert 
+# Aus Sicherheitsgründen damit keine Fehler enthalten sind
 
-#Profite aller Staaten -> wichtig für die Zukunft # 3. Punkt
-staaten_profite = df_clean.groupby(['State', 'InvoiceYear'])['Profit'].sum()
-print("Hier sind die Gesamtprofite aller Staaten im Datensatz:")
-print(staaten_profite)
+nachher = df_clean.shape[0]
+print(nachher)
+
+differenz = vorher - nachher 
+print(f"Die Differenz liegt bei: {differenz}")
 
 
-#Umsatz aller staaten > Im Vergleich mit Profit zu sehen wie stark die Steuern sind # 4. Punkt
-umsatz = df_clean.groupby(['State', 'InvoiceYear'])['Revenue'].sum()
-print("Gesamt Umsatz in den jeweiligen Staaten")
-print(umsatz)
+q_high = df_clean['Revenue'].quantile(0.999)# Oder 0.9999 absprache halten
+print(df_clean['Revenue'].quantile(0.999))
 
-'''
-#Nexus aller Staaten
-nexus = df_clean.groupby('State')['SalesTaxNoNexus'].sum().reset_index()
-print(nexus)
+df_clean = df_clean.loc[df_clean['Revenue'] < q_high].reset_index(drop=True)
+# Damit werden die oberen 0,01% gelöscht um mutmaßliche Falsch abbuchungen zu eliminieren
 
-owed = df_clean.groupby('State')['SalesTaxOwed'].sum().reset_index()
-print(owed)
-'''
-comparison = df_clean.groupby('State').agg(
-    TotalNexus = ("SalesTaxNoNexus", "sum"),
-    TotalOwed = ("SalesTaxOwed", "sum")
-).reset_index()
 
-print(comparison)
+year = df_clean[['InvoiceYear']].value_counts()
+print(year)
+# Jahresdiffernez an Daten
+
+
+print(df_clean['Revenue'].describe().round(2))
+# Zu sehen das die Standardabweichung bei Revenue wieder normal ist 
+# Von 428 auf 40.45 gesunken 
+
+
+print(df_clean['Revenue'].max())
+# Maximal berücksichtigtes Revenue
