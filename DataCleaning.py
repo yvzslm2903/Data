@@ -1,7 +1,6 @@
 import pandas as pd
 
-# Der vollständige, absolute Pfad auf deinem Mac:
-file_name = "/Users/yavuzselim/Desktop/Data Projekt/Data/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx"
+file_name = "Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx"
 df = pd.read_excel(file_name)
 
 df_clean = df.copy()

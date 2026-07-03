@@ -1,6 +1,6 @@
 import pandas as pd
 
-excel_path = "data/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx"
+excel_path = "Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx"
 
 df = pd.read_excel(excel_path)
 

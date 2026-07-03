@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-df_xlsx = pd.read_excel('/Users/yavuzselim/Desktop/Data Projekt/Data/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx')
-
+df_xlsx = pd.read_excel("data/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx")
 df_clean = df_xlsx.dropna().copy()
 
 df_clean.info()
@@ -52,7 +51,7 @@ revenue_state = (
     .reset_index()
 )
 
-plt.figure(figsize=(10, 5))  # WICHTIG: Neues Fenster für Grafik 2
+plt.figure(figsize=(10, 5)) 
 
 ax2 = sns.barplot(
     data=revenue_state,
@@ -74,9 +73,9 @@ plt.tight_layout()
 plt.show()
 
 
-# ==========================================
-# DIAGRAMM 3: Average Post-Tax Profit Margin by State
-# ==========================================
+
+#Average Post-Tax Profit Margin by State
+
 margin_state = (
     df_clean.groupby('State')['PostTaxProfitMargin']
     .mean()
