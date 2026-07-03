@@ -5,13 +5,12 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 
+# Verknüpft mit df_clean
 df_classification = df.df_clean
 
-# Gibt die gesamten Spalten aus dem DataFrame aus 
-# print(df_classification.columns.tolist())
 
 margin_median = df_classification["PostTaxProfitMargin"].median()
-
+print(margin_median)
 df.df_clean["HighProfitability"] = (
     df_classification["PostTaxProfitMargin"]
     > margin_median
@@ -19,19 +18,23 @@ df.df_clean["HighProfitability"] = (
 
 
 print(df_classification["HighProfitability"].value_counts())
+# Die zeilen mit Profitabilität werden aufgedeckt 
+# 1 = 188692 Zeilen; 0 = 197245
 
 feature_columns = [
     "ETR",
     "Revenue"] 
-# _> Einzeld abchecken also in 2 aufteieln! weil ETR alle zusammen ist das hier ist jetzt verdoppelt  
+# -> Einzeln abchecken also in 2 aufteieln! weil ETR alle zusammen ist das hier ist jetzt verdoppelt  
 
 feature_columns_tax = [
     "StateRate",
     "EstimatedCountyRate",
     "EstimatedCityRate",
-    "EstimatedSpecialRate"]    
+    "EstimatedSpecialRate",
+    "Revenue"]    
 
-X = df_classification[feature_columns_tax]
+
+X = df_classification[feature_columns]
 y = df_classification["HighProfitability"]
 
 X_train, X_test, y_train, y_test = train_test_split(
@@ -69,7 +72,7 @@ print(fit1.coef_)
 
 
 # Wahrscheinlichkeit für das gesamte Dataset
-df.df_clean["HighProfitabilityProbability"] = (
+df_classification["HighProfitabilityProbability"] = (
     fit1.predict_proba(X)[:, 1]
 )
 
