@@ -21,10 +21,6 @@ print(df_classification["HighProfitability"].value_counts())
 # Die zeilen mit Profitabilität werden aufgedeckt 
 # 1 = 188692 Zeilen; 0 = 197245
 
-feature_columns = [
-    "ETR",
-    "Revenue"] 
-# -> Einzeln abchecken also in 2 aufteieln! weil ETR alle zusammen ist das hier ist jetzt verdoppelt  
 
 feature_columns_tax = [
     "StateRate",
@@ -34,7 +30,7 @@ feature_columns_tax = [
     "Revenue"]    
 
 
-X = df_classification[feature_columns]
+X = df_classification[feature_columns_tax]
 y = df_classification["HighProfitability"]
 
 X_train, X_test, y_train, y_test = train_test_split(
