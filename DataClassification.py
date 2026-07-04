@@ -11,11 +11,12 @@ df_classification = df.df_clean.copy()
 
 margin_median = df_classification["PostTaxProfitMargin"].median()
 print(margin_median)
-df_classification["HighProfitability"] = (
-    df_classification["PostTaxProfitMargin"]
-    > margin_median
-).astype(int)
+# Median vom Margin wird erstellt 
 
+df_classification["HighProfitability"] = (
+    df_classification["PostTaxProfitMargin"] > margin_median).astype(int)# Damit wird übersetzt 1 = Tru und 0 = False
+# Hohe Profitabilität wird bestimmt -> Hoch Profitabil sind alle Umsätze die
+# über dem Median sind 
 
 print(df_classification["HighProfitability"].value_counts())
 # Die zeilen mit Profitabilität werden aufgedeckt 
@@ -32,18 +33,21 @@ feature_columns_tax = [
 
 X = df_classification[feature_columns_tax]
 y = df_classification["HighProfitability"]
+# 
 
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
-    test_size=0.20,
-    random_state=12,
-    stratify=y
+    test_size=0.20, # 80% der Daten für Training und 20% Testen 
+    random_state=12, # Verschiednene Werte werden jedesmal ausgewählt 
+    stratify=y # erzwingt die aufteilung in den Daten zwischen 1 und 0 damit man nicht 
+                # ausverehen nur 0 bekommt bei testen oder andersherum 
+
 )
 
 fit1 = LogisticRegression(
     random_state=0,
-    max_iter=1000
+    max_iter=1000 # Anzahl der Versuche um das perfekte Modell zu erreichen je komplexer desto höher 
 )
 
 fit1.fit(X_train, y_train)
