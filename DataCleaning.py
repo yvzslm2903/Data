@@ -1,8 +1,8 @@
 import pandas as pd
 
+
 file_name = "Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx"
 df = pd.read_excel(file_name)
-
 df_clean = df.copy()
 
 df_clean.info()
@@ -54,3 +54,4 @@ print(df_clean['Revenue'].describe().round(2))
 
 print(df_clean['Revenue'].max())
 # Maximal berücksichtigtes Revenue
+

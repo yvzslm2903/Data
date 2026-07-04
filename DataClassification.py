@@ -6,12 +6,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 
 # Verknüpft mit df_clean
-df_classification = df.df_clean
+df_classification = df.df_clean.copy()
 
 
 margin_median = df_classification["PostTaxProfitMargin"].median()
 print(margin_median)
-df.df_clean["HighProfitability"] = (
+df_classification["HighProfitability"] = (
     df_classification["PostTaxProfitMargin"]
     > margin_median
 ).astype(int)
