@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-df_xlsx = pd.read_excel("data/Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx")
+df_xlsx = pd.read_excel("Analytics_mindset_case_study_solutions_Trinas_Trinkets.xlsx")
 df_clean = df_xlsx.dropna().copy()
 
 df_clean.info()
@@ -83,7 +83,7 @@ margin_state = (
     .reset_index()
 )
 
-plt.figure(figsize=(10, 5))  # WICHTIG: Neues Fenster für Grafik 3
+plt.figure(figsize=(10, 5))  
 
 ax3 = sns.barplot(
     data=margin_state,
@@ -140,54 +140,3 @@ plt.xlabel("State", fontsize=12)
 plt.ylabel("Average Tax Rate", fontsize=12)
 plt.tight_layout()
 plt.show()
-
-
-#Overview State Ranking 
-ranking = df_clean.groupby("State").agg({
-    "Revenue": "sum",
-    "Profit": "sum",
-    "PostTaxProfitMargin": "mean",
-    "TotalTaxRate": "mean"
-})
-
-
-ranking["RevenueScore"] = (ranking["Revenue"] - ranking["Revenue"].min()) / (ranking["Revenue"].max() - ranking["Revenue"].min())
-ranking["ProfitScore"] = (ranking["Profit"] - ranking["Profit"].min()) / (ranking["Profit"].max() - ranking["Profit"].min())
-ranking["MarginScore"] = (ranking["PostTaxProfitMargin"] - ranking["PostTaxProfitMargin"].min()) / (ranking["PostTaxProfitMargin"].max() - ranking["PostTaxProfitMargin"].min())
-
-
-ranking["TaxScore"] = 1 - ((ranking["TotalTaxRate"] - ranking["TotalTaxRate"].min()) / (ranking["TotalTaxRate"].max() - ranking["TotalTaxRate"].min())) 
-
-ranking["OverallScore"] = (
-    ranking["RevenueScore"]
-    + ranking["ProfitScore"]
-    + ranking["MarginScore"]
-    + ranking["TaxScore"]
-) / 4
-
-ranking = ranking.sort_values("OverallScore", ascending=False).reset_index()
-
-plt.figure(figsize=(10, 5))  
-
-ax5 = sns.barplot(
-    data=ranking,
-    x="State",
-    y="OverallScore",
-    hue="State",
-    palette="viridis",
-    legend=False,
-    edgecolor="black"
-)
-
-for container in ax5.containers:
-    ax5.bar_label(container, fmt="%.2f")
-
-plt.title("Overall State Performance Score", fontsize=14)
-plt.xlabel("State", fontsize=12)
-plt.ylabel("Overall Score", fontsize=12)
-plt.tight_layout()
-plt.show()
-
-
-print("\n--- TOP OPERATING STATES FOR TRINA ---")
-print(ranking[["State", "OverallScore", "Revenue", "Profit"]].to_string(index=False))
