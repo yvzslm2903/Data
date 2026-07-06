@@ -12,8 +12,6 @@ df_clean["ActualPostTaxProfitMargin"] = (
     df_clean["ActualPostTaxProfit"] / df_clean["Revenue"]
 )
 
-plt.figure(figsize=(10, 5))
-
 revenue_state = (
     df_clean.groupby("State")["Revenue"]
     .sum()
