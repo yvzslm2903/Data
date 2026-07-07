@@ -8,8 +8,7 @@ df_xlsx = pd.read_excel(
 df_clean = df_xlsx.dropna().copy()
 
 df_clean["ActualPostTaxProfit"] = df_clean["Profit"] - df_clean["SalesTaxOwed"]
-df_clean["ActualPostTaxProfitMargin"] = (
-    df_clean["ActualPostTaxProfit"] / df_clean["Revenue"]
+df_clean["ActualPostTaxProfitMargin"] = (df_clean["ActualPostTaxProfit"] / df_clean["Revenue"]
 )
 
 plt.figure(figsize=(10, 5))

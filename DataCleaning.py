@@ -35,6 +35,7 @@ df_clean = df_clean.loc[
     (df_clean["Revenue"] >= q_low)
 ].reset_index(drop=True)
 
+
 year = df_clean[["InvoiceYear"]].value_counts()
 print(year)
 # Show the years of transaction for knowledge

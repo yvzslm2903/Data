@@ -23,12 +23,15 @@ print("Median: ", margin_median)
 print(df_classification["HighProfitability"].value_counts())
 
 # 1 = Nexus, 0 = No Nexus
+# These are the 3 states with nexus 
 nexus_states = ["Utah", "Washington", "Wyoming"]
 
 df_classification["HasNexus"] = (df_classification["State"].isin(nexus_states).astype(int))
 
 
 # Apply tax rates only to states with nexus
+# State with Nexus = 1 -> StateRate * 1
+# State without Nexus = 0 -> StateRate * 0
 df_classification["ActualStateRate"] = (df_classification["StateRate"]* df_classification["HasNexus"])
 
 df_classification["ActualCountyRate"] = (df_classification["EstimatedCountyRate"] * df_classification["HasNexus"])
@@ -55,18 +58,20 @@ X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
     test_size=0.20, 
-    random_state=12, 
-    stratify=y 
+    random_state=12, # mixing the Data so e.g. that you dont have only washington in training and Utah in test 
+    stratify=y # Splitting 50/50 the HighProfitability and LowProfitability
 )
 
 # Create and train the logistic regression model
+# The model is Weighting the 4 Taxrates how much ist affects when its changing minor Numbers like 0,498 to 0,497
 fit1 = LogisticRegression(
     random_state=0,
     max_iter=1000)
 
+# Model is training with Tax and HighProfitability
 fit1.fit(X_train, y_train)
 
-# Predict the classes for the test data
+#Training done! Now Testing with the 20% Data
 y_pred = fit1.predict(X_test)
 
 # Calculate the model accuracy
@@ -83,11 +88,13 @@ print(classification_report( y_test, y_pred))
 print("Intercept: ")
 print(fit1.intercept_)
 
+# - means high taxes sink the probability of HighProfitability
 print("Coefficients: ")
 print(fit1.coef_)
 
 
 # Calculate the probability for the entire dataset
+# Calculates the exact percentage chance for 1
 df_classification["HighProfitabilityProbability"] = (
     fit1.predict_proba(X)[:, 1]
 )
@@ -153,9 +160,7 @@ print("\nPROFITABILITY RANKING")
 print("-" * 85)
 
 print(
-    profitability_table
-    .round(2)
-    .to_string(index=False)
+    profitability_table.round(2).to_string(index=False)
 )
 
 
@@ -181,7 +186,5 @@ print("\nFINANCIAL RESULTS")
 print("-" * 90)
 
 print(
-    financial_table
-    .round(2)
-    .to_string(index=False)
+    financial_table.round(2).to_string(index=False)
 )
